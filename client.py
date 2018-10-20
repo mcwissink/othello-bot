@@ -74,17 +74,17 @@ def evalulate_board(player, board, current_player, turn):
 
 
 def get_move(player, board, turn, max_turn_time):
-  threads = []
-  pool = ThreadPool(processes=1)
-  for i in range(2, 6):
-      threads.append(pool.apply_async(minimax, (player, board, 3, player, turn)))
-  print(max_turn_time)
-  time.sleep((max_turn_time/1000) - 10)
-  for thread in threads:
-      print(thread.get())
-  # result = minimax(player, board, 3, player, turn)
-  # print('Move:', result[1])
-  return [2, 3]
+  # threads = []
+  # pool = ThreadPool(processes=1)
+  # for i in range(2, 6):
+  #     threads.append(pool.apply_async(minimax, (player, board, 3, player, turn)))
+  # print(max_turn_time)
+  # time.sleep((max_turn_time/1000) - 10)
+  # for thread in threads:
+  #     print(thread.get())
+  result = minimax(player, board, 3, player, turn)
+  print('Move:', result[1])
+  return result[0]
 
 # Minimax
 # Returns tuple (move, score)
