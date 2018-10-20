@@ -65,17 +65,25 @@ def evalulate_board(player, board, current_player, turn):
     evaluation -= weights["corner_adjacents"]
   elif board[1][0] == current_player:
     evaluation -= weights["corner_adjacents"]
+  elif board[1][1] == current_player:
+    evaluation -= weights["corner_adjacents"]
   elif board[6][0] == current_player:
     evaluation -= weights["corner_adjacents"]
   elif board[1][7] == current_player:
+    evaluation -= weights["corner_adjacents"]
+  elif board[1][6] == current_player:
     evaluation -= weights["corner_adjacents"]
   elif board[6][1] == current_player:
     evaluation -= weights["corner_adjacents"]
   elif board[7][1] == current_player:
     evaluation -= weights["corner_adjacents"]
+  elif board[6][1] == current_player:
+    evaluation -= weights["corner_adjacents"]
   elif board[7][6] == current_player:
     evaluation -= weights["corner_adjacents"]
   elif board[6][7] == current_player:
+    evaluation -= weights["corner_adjacents"]
+  elif board[6][6] == current_player:
     evaluation -= weights["corner_adjacents"]
 
   #return a positive or negative
