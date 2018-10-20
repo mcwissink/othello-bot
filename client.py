@@ -47,24 +47,22 @@ def evalulate_board(player, board, current_player, turn):
   elif board[4][4] == current_player:
     evaluation += weights["middle"]
 
-  # check locations adjacent to corners and take away points
-  if turn <= 40:
-    if board[0][1] == current_player:
-      evaluation -= weights["corner_adjacents"]
-    elif board[1][0] == current_player:
-      evaluation -= weights["corner_adjacents"]
-    elif board[6][0] == current_player:
-      evaluation -= weights["corner_adjacents"]
-    elif board[1][7] == current_player:
-      evaluation -= weights["corner_adjacents"]
-    elif board[6][1] == current_player:
-      evaluation -= weights["corner_adjacents"]
-    elif board[7][1] == current_player:
-      evaluation -= weights["corner_adjacents"]
-    elif board[7][6] == current_player:
-      evaluation -= weights["corner_adjacents"]
-    elif board[6][7] == current_player:
-      evaluation -= weights["corner_adjacents"]
+  if board[0][1] == current_player:
+    evaluation -= weights["corner_adjacents"]
+  elif board[1][0] == current_player:
+    evaluation -= weights["corner_adjacents"]
+  elif board[6][0] == current_player:
+    evaluation -= weights["corner_adjacents"]
+  elif board[1][7] == current_player:
+    evaluation -= weights["corner_adjacents"]
+  elif board[6][1] == current_player:
+    evaluation -= weights["corner_adjacents"]
+  elif board[7][1] == current_player:
+    evaluation -= weights["corner_adjacents"]
+  elif board[7][6] == current_player:
+    evaluation -= weights["corner_adjacents"]
+  elif board[6][7] == current_player:
+    evaluation -= weights["corner_adjacents"]
 
   #return a positive or negative
   #depending on whos turn it is in the board state
@@ -73,10 +71,8 @@ def evalulate_board(player, board, current_player, turn):
   return evaluation * -1
 
 
-def get_move(player, board):
-  turn = 0
+def get_move(player, board, turn):
   result = minimax(player, board, 3, player, turn)
-  turn += 1
   print('Move:', result[1])
   return result[0]
 
@@ -192,6 +188,7 @@ if __name__ == "__main__":
   sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
   try:
     sock.connect((host, port))
+    turn = 0
     while True:
       data = sock.recv(1024)
       if not data:
@@ -202,8 +199,9 @@ if __name__ == "__main__":
       maxTurnTime = json_data['maxTurnTime']
       player = json_data['player']
 
-      move = get_move(player, board)
+      move = get_move(player, board, turn)
       response = prepare_response(move)
       sock.sendall(response)
+      turn += 1
   finally:
     sock.close()
