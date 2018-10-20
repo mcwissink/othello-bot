@@ -15,6 +15,18 @@ def get_move(player, board):
   # TODO determine best move
   return [2, 3]
 
+def minimax(player, board, depth):
+  # Get the valid moves
+  valid_moves = get_valid_moves(player, board)
+
+  if (valid_moves == False or depth == 0):
+      return ([0, 0], evalulate_board(board))
+  for move in valid_moves:
+
+
+def evalulate_board(board):
+    return 0
+
 def on_board(x, y):
   return x >= 0 and x <= 7 and y >= 0 and y <= 7
 
