@@ -240,6 +240,7 @@ if __name__ == "__main__":
     sock.connect((host, port))
     turn = 0
     while True:
+      print(turn)
       data = sock.recv(1024)
       if not data:
         print('connection to server closed')
@@ -252,6 +253,6 @@ if __name__ == "__main__":
       move = get_move(player, board, turn, max_turn_time)
       response = prepare_response(move)
       sock.sendall(response)
-      turn += 1
+      turn += 2
   finally:
     sock.close()
