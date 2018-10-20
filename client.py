@@ -25,16 +25,23 @@ def is_valid_move(player, board, x_start, y_start):
 
   tiles_to_flip = []
   for x_dir, y_dir in [[0, 1], [1, 1], [1, 0], [1, -1], [0, -1], [-1, -1], [-1, 0], [-1, 1]]:
-      x, y = x_start, y_start
+    x, y = x_start + x_dir, y_start + y_dir
+    # While we are still on the board an opponent tiles
+    while on_board(x, y) and board[x][y] == get_opponent(player):
       x += x_dir
       y += y_dir
-      # Check if the direction is valid
-      while on_board(x, y) and board[x][y] == get_opponent(player):
-          x += x_dir
-          y += y_dir
-          if not on_board(x, y):
-            break
-          
+      # If our next move is me, return the tiles to flip
+      if board[x][y] == player:
+        # iterate back and add append to tiles_to_flip
+        while x != x_start and y != y_start
+          x -= x_dir
+          y -= y_dir
+          tiles_to_flip.append((x, y))
+    # Reset the original position
+    board[x_start][y_start] = 0
+    if len(tiles_to_flip) == 0:
+        return False
+    return tiles_to_flip
 
 
 
