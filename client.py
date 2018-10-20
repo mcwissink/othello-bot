@@ -6,6 +6,9 @@ import socket
 
 def get_move(player, board):
   # TODO determine valid moves
+  possible_moves = get_valid_moves(board)
+
+
   # TODO determine best move
   return [2, 3]
 
