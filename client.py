@@ -6,10 +6,10 @@ import socket
 import math
 
 weights = {
-  "corner": 10,
+  "corner": 20,
   "middle": 5,
   "edge_pieces": 2,
-  "num_moves": 3}
+}
 
 def evalulate_board(player, board, current_player):
   evaluation = 0
@@ -45,10 +45,6 @@ def evalulate_board(player, board, current_player):
   if board[4][4] == current_player:
     evaluation += weights["middle"]
 
-  num_moves = get_valid_moves(player, board)
-  evaluation += num_moves.size() * weights["num_moves"]
-
-
   #return a positive or negative
   #depending on whos turn it is in the board state
   if player == current_player:
@@ -57,9 +53,9 @@ def evalulate_board(player, board, current_player):
 
 
 def get_move(player, board):
-  result = minimax(player, board, 10, player)
-  print('Move:', result)
-  return [result[0][0], result[0][1]]
+  result = minimax(player, board, 100, player)
+  print('Move:', result[1])
+  return result[0]
 
 # Minimax
 # Returns tuple (move, score)
@@ -71,7 +67,7 @@ def minimax(player, board, depth, current_player):
 
   # Base case
   if (not valid_moves or depth == 0):
-      return ([0, 0], evalulate_board(board))
+      return ([0, 0], evalulate_board(player, board, current_player))
 
   best_move = [-1, -1]
   best_score = 0
@@ -151,7 +147,7 @@ def get_valid_moves(player, board):
   for row in range(0, 8):
     for column in range(0, 8):
       if is_valid_move(player, board, row, column):
-        valid_moves.append((row, column))
+        valid_moves.append([row, column])
   return valid_moves
 
 
