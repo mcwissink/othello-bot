@@ -6,7 +6,8 @@ import socket
 
 def get_move(player, board):
   # TODO determine valid moves
-  possible_moves = get_valid_moves(board)
+  possible_moves = get_valid_moves(player, board)
+  print(possible_moves)
 
 
 
@@ -15,7 +16,7 @@ def get_move(player, board):
   return [2, 3]
 
 def on_board(x, y):
-  return x >= 0 && x <= 7 && y >= 0 && y <= 7
+  return x >= 0 and x <= 7 and y >= 0 and y <= 7
 
 def is_valid_move(player, board, x_start, y_start):
   # Check if move is even valid
@@ -58,6 +59,15 @@ def get_valid_moves(player, board):
       if is_valid_move(player, board, row, column):
         valid_moves.append((row, column))
   return valid_moves
+
+
+
+
+
+
+
+
+
 
 def prepare_response(move):
   response = '{}\n'.format(move).encode()
