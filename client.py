@@ -102,9 +102,6 @@ def minimax(player, board, depth, current_player):
   # Return the best move and score that we found
   return (best_move, best_score)
 
-def evalulate_board(board):
-    return 0
-
 def make_move(player, board, position):
   # Flip the tiles - need to optimize this
   for tile in is_valid_move(player, board, position[0], position[1]):
