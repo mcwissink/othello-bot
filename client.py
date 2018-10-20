@@ -9,11 +9,37 @@ def get_move(player, board):
   # TODO determine best move
   return [2, 3]
 
-def is_valid_move(position, board):
-  return true
+def on_board(x, y):
+  return x >= 0 && x <= 7 && y >= 0 && y <= 7
+
+def is_valid_move(player, board, x_start, y_start):
+  # Check if move is even valid
+  if not on_board(x_start, y_start) and board[x_start][y_start] != 0:
+      return False
+
+  # Set the tile
+  board[x_start][y_start] = player
+
+  tiles_to_flip = []
+  for x_dir, y_dir in [[0, 1], [1, 1], [1, 0], [1, -1], [0, -1], [-1, -1], [-1, 0], [-1, 1]]:
+      x, y = x_start, y_start
+      x += x_dir
+      y += y_dir
+      # Check if the direction is valid
+      while on_board(x, y) and board[x][y] == get_opponent(player):
+          x += x_dir
+          y += y_dir
+          if not on_board(x, y):
+            break
+          
+
+
+
+def get_opponent(player):
+  return (player + 1) % 2
 
 def get_valid_moves(board):
-    return []
+  return []
 
 def prepare_response(move):
   response = '{}\n'.format(move).encode()
