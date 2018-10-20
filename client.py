@@ -5,6 +5,9 @@ import json
 import socket
 import math
 import copy
+import random
+
+
 
 weights = {
   "corner": 25,
@@ -38,15 +41,16 @@ def evalulate_board(player, board, current_player, turn):
     elif board[7][i] == current_player:
       evaluation += weights["edge_pieces"]
 
-  # check middle four pieces of the on_board
-  if board[3][3] == current_player:
-    evaluation += weights["middle"]
-  elif board[3][4] == current_player:
-    evaluation += weights["middle"]
-  elif board[4][3] == current_player:
-    evaluation += weights["middle"]
-  elif board[4][4] == current_player:
-    evaluation += weights["middle"]
+  if turn < 20:
+      # check middle four pieces of the on_board
+      if board[3][3] == current_player:
+        evaluation += weights["middle"]
+      elif board[3][4] == current_player:
+        evaluation += weights["middle"]
+      elif board[4][3] == current_player:
+        evaluation += weights["middle"]
+      elif board[4][4] == current_player:
+        evaluation += weights["middle"]
 
   if turn > 40:
     player_num_chips = 0
@@ -223,6 +227,7 @@ def get_valid_moves(current_player, board):
     for column in range(0, 8):
       if is_valid_move(current_player, board, [row, column]):
         valid_moves.append([row, column])
+  random.shuffle(valid_moves)
   return valid_moves
 
 
