@@ -4,6 +4,7 @@ import sys
 import json
 import socket
 import math
+import copy
 
 weights = {
   "corner": 20,
@@ -74,7 +75,7 @@ def evalulate_board(player, board, current_player, turn):
 
 def get_move(player, board):
   turn = 0
-  result = minimax(player, board, 100, player, turn)
+  result = minimax(player, board, 3, player, turn)
   turn += 1
   print('Move:', result[1])
   return result[0]
@@ -97,18 +98,19 @@ def minimax(player, board, depth, current_player, turn):
   else:
     best_score = math.inf
 
-  board_copy = board.copy()
+
   # Recursive step
   if maximizing_player: # Me - maximize
     for move in valid_moves:
+      board_copy = copy.deepcopy(board)
       make_move(current_player, board_copy, move)
       result = minimax(player, board_copy, depth - 1, get_opponent(current_player), turn)
       if result[1] > best_score:
         best_move = move
-        print(best_score)
         best_score = result[1]
   else: # Opponent - minimize
     for move in valid_moves:
+      board_copy = copy.deepcopy(board)
       make_move(current_player, board_copy, move)
       result = minimax(player, board_copy, depth - 1, get_opponent(current_player), turn + 1)
       if result[1] < best_score:
@@ -118,17 +120,17 @@ def minimax(player, board, depth, current_player, turn):
   # Return the best move and score that we found
   return (best_move, best_score)
 
-def make_move(player, board, move):
+def make_move(current_player, board, move):
   # Flip the tiles - need to optimize this
-  for tile in is_valid_move(player, board, move):
-    board[tile[0]][tile[1]] = player
+  for tile in is_valid_move(current_player, board, move):
+    board[tile[0]][tile[1]] = current_player
   # Set our tile
-  board[move[0]][move[1]] = player
+  board[move[0]][move[1]] = current_player
 
 def on_board(move):
   return move[0] >= 0 and move[0] <= 7 and move[1] >= 0 and move[1] <= 7
 
-def is_valid_move(player, board, move, debug=False):
+def is_valid_move(current_player, board, move):
   # Check if move can be made
   if board[move[0]][move[1]] != 0:
       return []
@@ -138,11 +140,11 @@ def is_valid_move(player, board, move, debug=False):
     x = move[0] + x_dir
     y = move[1] + y_dir
     # While we are still on the board an opponent tiles
-    while on_board([x, y]) and board[x][y] == get_opponent(player):
+    while on_board([x, y]) and board[x][y] == get_opponent(current_player):
       x += x_dir
       y += y_dir
       # If our next move is me, return the tiles to flip
-      if on_board([x, y]) and board[x][y] == player:
+      if on_board([x, y]) and board[x][y] == current_player:
         # iterate back and add append to tiles_to_flip
         x -= x_dir
         y -= y_dir
@@ -161,12 +163,11 @@ def get_opponent(player):
     return 2
   return 1
 
-def get_valid_moves(player, board):
+def get_valid_moves(current_player, board):
   valid_moves = []
-
   for row in range(0, 8):
     for column in range(0, 8):
-      if is_valid_move(player, board, [row, column]):
+      if is_valid_move(current_player, board, [row, column]):
         valid_moves.append([row, column])
   return valid_moves
 
