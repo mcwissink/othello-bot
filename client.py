@@ -7,10 +7,10 @@ import math
 import copy
 
 weights = {
-  "corner": 20,
+  "corner": 20000,
   "middle": 5,
   "edge_pieces": 2,
-  "corner_adjacents": 10,
+  "corner_adjacents": 200,
   "number_of_chips": 1
 }
 
@@ -86,13 +86,13 @@ def evalulate_board(player, board, current_player, turn):
 
 
 def get_move(player, board, turn, max_turn_time):
-  result = minimax(player, board, 3, player, turn)
+  result = minimax(player, board, 7, player, turn, -math.inf, math.inf)
   print('Move:', result[1])
   return result[0]
 
 # Minimax
 # Returns tuple (move, score)
-def minimax(player, board, depth, current_player, turn):
+def minimax(player, board, depth, current_player, turn, alpha, beta):
   # Maximize our players move
   maximizing_player = player == current_player
   # Get the valid moves
@@ -121,7 +121,7 @@ def minimax(player, board, depth, current_player, turn):
       board[move[0]][move[1]] = current_player
 
       # Check the reults
-      result = minimax(player, board, depth - 1, get_opponent(current_player), turn)
+      result = minimax(player, board, depth - 1, get_opponent(current_player), turn, alpha, beta)
       # Update our best score and move
       if result[1] > best_score:
         best_move = move
@@ -132,6 +132,11 @@ def minimax(player, board, depth, current_player, turn):
         board[tile[0]][tile[1]] = get_opponent(current_player)
       # Set our tile
       board[move[0]][move[1]] = 0
+
+      # Alpha
+      alpha = max(alpha, result[1])
+      if beta <= alpha:
+          break
   else: # Opponent - minimize
     for move in valid_moves:
       # Make the move
@@ -142,7 +147,7 @@ def minimax(player, board, depth, current_player, turn):
       # Set our tile
       board[move[0]][move[1]] = current_player
 
-      result = minimax(player, board, depth - 1, get_opponent(current_player), turn + 1)
+      result = minimax(player, board, depth - 1, get_opponent(current_player), turn + 1, alpha, beta)
       if result[1] < best_score:
         best_move = move
         best_score = result[1]
@@ -152,6 +157,11 @@ def minimax(player, board, depth, current_player, turn):
         board[tile[0]][tile[1]] = get_opponent(current_player)
       # Set our tile
       board[move[0]][move[1]] = 0
+
+      # Beta
+      beta = min(beta, result[1])
+      if beta <= alpha:
+          break
 
   # Return the best move and score that we found
   return (best_move, best_score)
