@@ -11,7 +11,7 @@ weights = {
   "edge_pieces": 2,
 }
 
-def evalulate_board(player, board, current_player):
+def evalulate_board(player, board, current_player, turn):
   evaluation = 0
 
   #add corner weights
@@ -53,13 +53,15 @@ def evalulate_board(player, board, current_player):
 
 
 def get_move(player, board):
-  result = minimax(player, board, 100, player)
+  turn = 0
+  result = minimax(player, board, 100, player, turn)
+  turn += 1
   print('Move:', result[1])
   return result[0]
 
 # Minimax
 # Returns tuple (move, score)
-def minimax(player, board, depth, current_player):
+def minimax(player, board, depth, current_player, turn):
   # Maximize our players move
   maximizing_player = player == current_player
   # Get the valid moves
@@ -67,7 +69,7 @@ def minimax(player, board, depth, current_player):
 
   # Base case
   if (not valid_moves or depth == 0):
-      return ([0, 0], evalulate_board(player, board, current_player))
+      return ([0, 0], evalulate_board(player, board, current_player, turn))
 
   best_move = [-1, -1]
   best_score = 0
@@ -82,7 +84,7 @@ def minimax(player, board, depth, current_player):
     for move in valid_moves:
       board_copy = board.copy()
       make_move(current_player, board_copy, move)
-      result = minimax(player, board_copy, depth - 1, get_opponent(current_player))
+      result = minimax(player, board_copy, depth - 1, get_opponent(current_player), turn)
       if result[1] > best_score:
         best_move = move
         best_score = result[1]
@@ -90,7 +92,7 @@ def minimax(player, board, depth, current_player):
     for move in valid_moves:
       board_copy = board.copy()
       make_move(current_player, board_copy, move)
-      result = minimax(player, board_copy, depth - 1, get_opponent(current_player))
+      result = minimax(player, board_copy, depth - 1, get_opponent(current_player), turn + 1)
       if result[1] < best_score:
         best_move = move
         best_score = result[1]
@@ -138,7 +140,7 @@ def is_valid_move(player, board, x_start, y_start):
 
 def get_opponent(player):
   if player == 1:
-      return 2
+    return 2
   return 1
 
 def get_valid_moves(player, board):
