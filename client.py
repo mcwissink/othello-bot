@@ -5,6 +5,8 @@ import json
 import socket
 import math
 import copy
+import time
+from multiprocessing.pool import ThreadPool
 
 weights = {
   "corner": 20,
@@ -85,7 +87,15 @@ def evalulate_board(player, board, current_player, turn):
   return evaluation * -1
 
 
-def get_move(player, board, turn):
+def get_move(player, board, turn, max_turn_time):
+  # threads = []
+  # pool = ThreadPool(processes=1)
+  # for i in range(2, 6):
+  #     threads.append(pool.apply_async(minimax, (player, board, 3, player, turn)))
+  # print(max_turn_time)
+  # time.sleep((max_turn_time/1000) - 10)
+  # for thread in threads:
+  #     print(thread.get())
   result = minimax(player, board, 3, player, turn)
   print('Move:', result[1])
   return result[0]
@@ -112,20 +122,46 @@ def minimax(player, board, depth, current_player, turn):
   # Recursive step
   if maximizing_player: # Me - maximize
     for move in valid_moves:
-      board_copy = copy.deepcopy(board)
-      make_move(current_player, board_copy, move)
-      result = minimax(player, board_copy, depth - 1, get_opponent(current_player), turn)
+      # Make the move
+      # Flip the tiles - need to optimize this
+      tiles_to_flip = is_valid_move(current_player, board, move)
+      for tile in tiles_to_flip:
+        board[tile[0]][tile[1]] = current_player
+      # Set our tile
+      board[move[0]][move[1]] = current_player
+
+      # Check the reults
+      result = minimax(player, board, depth - 1, get_opponent(current_player), turn)
+      # Update our best score and move
       if result[1] > best_score:
         best_move = move
         best_score = result[1]
+
+      # Reset the tiles
+      for tile in tiles_to_flip:
+        board[tile[0]][tile[1]] = get_opponent(current_player)
+      # Set our tile
+      board[move[0]][move[1]] = 0
   else: # Opponent - minimize
     for move in valid_moves:
-      board_copy = copy.deepcopy(board)
-      make_move(current_player, board_copy, move)
-      result = minimax(player, board_copy, depth - 1, get_opponent(current_player), turn + 1)
+      # Make the move
+      # Flip the tiles - need to optimize this
+      tiles_to_flip = is_valid_move(current_player, board, move)
+      for tile in tiles_to_flip:
+        board[tile[0]][tile[1]] = current_player
+      # Set our tile
+      board[move[0]][move[1]] = current_player
+
+      result = minimax(player, board, depth - 1, get_opponent(current_player), turn + 1)
       if result[1] < best_score:
         best_move = move
         best_score = result[1]
+
+      # Reset the tiles
+      for tile in tiles_to_flip:
+        board[tile[0]][tile[1]] = get_opponent(current_player)
+      # Set our tile
+      board[move[0]][move[1]] = 0
 
   # Return the best move and score that we found
   return (best_move, best_score)
@@ -210,10 +246,10 @@ if __name__ == "__main__":
         break
       json_data = json.loads(str(data.decode('UTF-8')))
       board = json_data['board']
-      maxTurnTime = json_data['maxTurnTime']
+      max_turn_time = json_data['maxTurnTime']
       player = json_data['player']
 
-      move = get_move(player, board, turn)
+      move = get_move(player, board, turn, max_turn_time)
       response = prepare_response(move)
       sock.sendall(response)
       turn += 1
