@@ -11,6 +11,7 @@ weights = {
   "middle": 5,
   "edge_pieces": 2,
   "corner_adjacents": 10,
+  "number_of_chips": 1
 }
 
 def evalulate_board(player, board, current_player, turn):
@@ -46,6 +47,19 @@ def evalulate_board(player, board, current_player, turn):
     evaluation += weights["middle"]
   elif board[4][4] == current_player:
     evaluation += weights["middle"]
+
+  if turn > 40:
+    player_num_chips = 0
+    opponent_num_chips = 0
+    for row in range(0, 8):
+      for column in range(0, 8):
+        if board[row][column] == current_player:
+          player_num_chips += 1
+        elif board[row][column] == get_opponent(current_player):
+          opponent_num_chips += 1
+    evaluation += player_num_chips - opponent_num_chips
+
+
 
   if board[0][1] == current_player:
     evaluation -= weights["corner_adjacents"]
