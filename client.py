@@ -7,10 +7,10 @@ import math
 import copy
 
 weights = {
-  "corner": 20000,
+  "corner": 25,
   "middle": 5,
-  "edge_pieces": 2,
-  "corner_adjacents": 200,
+  "edge_pieces": 10,
+  "corner_adjacents": 15,
   "number_of_chips": 1
 }
 
@@ -94,7 +94,7 @@ def evalulate_board(player, board, current_player, turn):
 
 
 def get_move(player, board, turn, max_turn_time):
-  result = minimax(player, board, 7, player, turn, -math.inf, math.inf)
+  result = minimax(player, board, 6, player, turn, -math.inf, math.inf)
   print('Move:', result[1])
   return result[0]
 
