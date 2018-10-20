@@ -9,6 +9,8 @@ def get_move(player, board):
   possible_moves = get_valid_moves(board)
 
 
+
+
   # TODO determine best move
   return [2, 3]
 
@@ -34,15 +36,21 @@ def is_valid_move(player, board, x_start, y_start):
           y += y_dir
           if not on_board(x, y):
             break
-          
+
 
 
 
 def get_opponent(player):
   return (player + 1) % 2
 
-def get_valid_moves(board):
-  return []
+def get_valid_moves(player, board):
+  valid_moves = []
+
+  for row in range(0, 8):
+    for column in range(0, 8):
+      if is_valid_move(player, board, row, column):
+        valid_moves.append((row, column))
+  return valid_moves
 
 def prepare_response(move):
   response = '{}\n'.format(move).encode()
