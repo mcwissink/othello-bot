@@ -4,16 +4,64 @@ import sys
 import json
 import socket
 
+weights = {
+  "corner": 10,
+  "middle": 5,
+  "edge_pieces": 2,
+  "num_moves": 3}
+
+
 def get_move(player, board):
   # TODO determine valid moves
   possible_moves = get_valid_moves(player, board)
   print(possible_moves)
 
-
-
-
   # TODO determine best move
   return [2, 3]
+
+def evalulate_board(player, board, current_player):
+  evaluation = 0
+
+  #add corner weights
+  if board[0][0] == current_player:
+    evaluation += weights["corner"]
+  if board[0][7] == current_player:
+    evaluation += weights["corner"]
+  if board[7][0] == current_player:
+    evaluation += weights["corner"]
+  if board[7][7] == current_player:
+    evaluation += weights["corner"]
+
+  #count non-corner edges
+  for i in range(1, 7):
+    if board[0][i] == current_player:
+      evaluation += weights["edge_pieces"]
+    if board[i][0] == current_player:
+      evaluation += weights["edge_pieces"]
+    if board[i][7] == current_player:
+      evaluation += weights["edge_pieces"]
+    if board[7][i] == current_player:
+      evaluation += weights["edge_pieces"]
+
+  #check middle four pieces of the on_board
+  if board[3][3] == current_player:
+    evaluation += weights["middle"]
+  if board[3][4] == current_player:
+    evaluation += weights["middle"]
+  if board[4][3] == current_player:
+    evaluation += weights["middle"]
+  if board[4][4] == current_player:
+    evaluation += weights["middle"]
+
+  num_moves = get_valid_moves(player, board)
+  evaluation += num_moves.size() * weights["num_moves"]
+  
+
+  #return a positive or negative
+  #depending on whos turn it is in the board state
+  if player == current_player:
+    return evaluation
+  return evaluation * -1
 
 def minimax(player, board, depth):
   # Get the valid moves
@@ -22,10 +70,6 @@ def minimax(player, board, depth):
   if (valid_moves == False or depth == 0):
       return ([0, 0], evalulate_board(board))
   for move in valid_moves:
-
-
-def evalulate_board(board):
-    return 0
 
 def on_board(x, y):
   return x >= 0 and x <= 7 and y >= 0 and y <= 7
