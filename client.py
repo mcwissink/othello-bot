@@ -20,7 +20,7 @@ def on_board(x, y):
 
 def is_valid_move(player, board, x_start, y_start):
   # Check if move is even valid
-  if not on_board(x_start, y_start) and board[x_start][y_start] != 0:
+  if not on_board(x_start, y_start) or board[x_start][y_start] != 0:
       return False
 
   # Set the tile
@@ -28,28 +28,34 @@ def is_valid_move(player, board, x_start, y_start):
 
   tiles_to_flip = []
   for x_dir, y_dir in [[0, 1], [1, 1], [1, 0], [1, -1], [0, -1], [-1, -1], [-1, 0], [-1, 1]]:
-    x, y = x_start + x_dir, y_start + y_dir
+    x = x_start + x_dir
+    y = y_start + y_dir
     # While we are still on the board an opponent tiles
     while on_board(x, y) and board[x][y] == get_opponent(player):
       x += x_dir
       y += y_dir
       # If our next move is me, return the tiles to flip
-      if board[x][y] == player:
+      if on_board(x, y) and board[x][y] == player:
         # iterate back and add append to tiles_to_flip
-        while x != x_start and y != y_start
+        x -= x_dir
+        y -= y_dir
+        while not (x == x_start and y == y_start):
+          tiles_to_flip.append((x, y))
           x -= x_dir
           y -= y_dir
-          tiles_to_flip.append((x, y))
-    # Reset the original position
-    board[x_start][y_start] = 0
-    if len(tiles_to_flip) == 0:
-        return False
-    return tiles_to_flip
+        break
+  # Reset the original position
+  board[x_start][y_start] = 0
+  if len(tiles_to_flip) == 0:
+    return False
+  return tiles_to_flip
 
 
 
 def get_opponent(player):
-  return (player + 1) % 2
+  if player == 1:
+      return 2
+  return 1
 
 def get_valid_moves(player, board):
   valid_moves = []
